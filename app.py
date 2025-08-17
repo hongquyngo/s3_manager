@@ -39,16 +39,26 @@ st.markdown("""
     }
     
     /* Folder navigation buttons */
-    .stButton > button[kind="secondary"] {
-        height: 80px;
+    div[data-testid="column"] > div > div > button {
+        min-height: 80px;
         white-space: pre-wrap;
-        background-color: #f0f2f6;
-        border: 1px solid #ddd;
+        font-size: 14px;
+        line-height: 1.4;
     }
     
-    .stButton > button[kind="secondary"]:hover {
-        background-color: #e0e2e6;
-        border-color: #0066cc;
+    /* Folder cards styling */
+    button[kind="secondary"] {
+        background-color: #f8f9fa;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+    }
+    
+    button[kind="secondary"]:hover {
+        background-color: #e3f2fd;
+        border-color: #1976d2;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
     
     /* Improve dataframe styling */
@@ -458,8 +468,15 @@ def show_main_app():
         
         # Version info
         st.divider()
-        st.caption("AWS S3 File Manager v1.1.0")
+        st.caption("AWS S3 File Manager v1.1.1")
         st.caption(f"© 2024 iSCM Dashboard")
+        with st.expander("📚 Need help?"):
+            st.markdown("""
+            - **Navigate folders**: Click on folder cards
+            - **Upload files**: Drag & drop in main area
+            - **Go back**: Use breadcrumb navigation
+            - [View Quick Start Guide](QUICKSTART.md)
+            """)
     
     # Main content
     st.title("📁 File Manager")
@@ -579,11 +596,15 @@ def show_main_app():
             for idx, folder in enumerate(folders):
                 with folder_cols[idx % 4]:
                     # Create a button that looks like a folder card
+                    folder_name = folder['name']
+                    # Truncate long names
+                    display_name = folder_name[:20] + "..." if len(folder_name) > 20 else folder_name
+                    
                     if st.button(
-                        f"📁\n**{folder['name']}**",
+                        f"📁\n**{display_name}**\n📅 {folder['modified'] if folder['modified'] != '-' else 'N/A'}",
                         key=f"folder_nav_{idx}",
                         use_container_width=True,
-                        help=f"Click to open {folder['name']}"
+                        help=f"Click to open {folder_name}"
                     ):
                         # Navigate to folder
                         folder_path = folder['path'].rstrip('/')

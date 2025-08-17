@@ -28,3 +28,4 @@ Thumbs.db
 docs/
 credentials.json
 *.pyc
+QUICKSTART.md
