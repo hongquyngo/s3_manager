@@ -53,3 +53,5 @@ loguru  # Better logging
 sentry-sdk  # Error tracking
 
 boto3
+botocore
+Pillow

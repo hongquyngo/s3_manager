@@ -5,7 +5,6 @@ import logging
 from datetime import datetime, timedelta
 import mimetypes
 from typing import Optional, Dict, List, Tuple
-from PIL import Image
 from io import BytesIO
 import pandas as pd
 
@@ -133,6 +132,7 @@ class S3AdvancedManager:
                     }
                 else:
                     try:
+                        from PIL import Image
                         image = Image.open(BytesIO(content))
                         # Create thumbnail
                         image.thumbnail((800, 600), Image.Resampling.LANCZOS)
@@ -148,8 +148,10 @@ class S3AdvancedManager:
                             'format': image.format,
                             'size': image.size
                         }
-                    except:
-                        return {'type': 'error', 'message': 'Unable to process image'}
+                    except ImportError:
+                        return {'type': 'error', 'message': 'PIL/Pillow not installed for image preview'}
+                    except Exception as e:
+                        return {'type': 'error', 'message': f'Unable to process image: {str(e)}'}
             
             # CSV files
             elif file_extension == 'csv':
